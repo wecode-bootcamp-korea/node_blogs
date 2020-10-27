@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model articles {
+  id         Int             @id @default(autoincrement())
+  user_id    Int             @unique
+  title      String
+  body       String
+  status     articles_status @default(DRAFT)
+  created_at DateTime?       @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+  users      users           @relation(fields: [user_id], references: [id])
+  comments   comments?
+}
+
+model comments {
+  id         Int       @id @default(autoincrement())
+  article_id Int       @unique
+  user_id    Int       @unique
+  body       String
+  created_at DateTime? @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+  articles   articles  @relation(fields: [article_id], references: [id])
+  users      users     @relation(fields: [user_id], references: [id])
+}
+
+model users {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  status     users_status @default(ACTIVE)
+  created_at DateTime?    @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
+  articles   articles?
+  comments   comments?
+}
+
+enum articles_status {
+  DRAFT
+  PUBLISHED
+  DELETED
+}
+
+enum users_status {
+  ACTIVE
+  INACTIVE
+}
