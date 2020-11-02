@@ -13,6 +13,9 @@ app.post('/users/signup', async (req, res) => {
   try {
     const { email, password } = req.body
 
+    if (!email && !password)
+      return res.status(400).json({ message: 'invalid input' })
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const createdUser = await prisma.users.create({
