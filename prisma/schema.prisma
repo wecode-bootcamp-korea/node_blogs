@@ -9,7 +9,7 @@ datasource db {
 
 model articles {
   id         Int             @id @default(autoincrement())
-  user_id    Int             @unique
+  user_id    Int
   title      String
   body       String
   status     articles_status @default(DRAFT)
@@ -17,19 +17,24 @@ model articles {
   updated_at DateTime?
   deleted_at DateTime?
   users      users           @relation(fields: [user_id], references: [id])
-  comments   comments?
+  comments   comments[]
+
+  @@index([user_id], name: "user_id")
 }
 
 model comments {
   id         Int       @id @default(autoincrement())
-  article_id Int       @unique
-  user_id    Int       @unique
+  article_id Int
+  user_id    Int
   body       String
   created_at DateTime? @default(now())
   updated_at DateTime?
   deleted_at DateTime?
   articles   articles  @relation(fields: [article_id], references: [id])
   users      users     @relation(fields: [user_id], references: [id])
+
+  @@index([article_id], name: "article_id")
+  @@index([user_id], name: "user_id")
 }
 
 model users {
@@ -40,8 +45,8 @@ model users {
   created_at DateTime?    @default(now())
   updated_at DateTime?
   deleted_at DateTime?
-  articles   articles?
-  comments   comments?
+  articles   articles[]
+  comments   comments[]
 }
 
 enum articles_status {

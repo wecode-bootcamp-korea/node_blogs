@@ -12,7 +12,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `articles` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int UNIQUE NOT NULL,
+  `user_id` int NOT NULL,
   `title` varchar(200) NOT NULL,
   `body` varchar(2000) NOT NULL,
   `status` ENUM ('DRAFT', 'PUBLISHED', 'DELETED') NOT NULL DEFAULT "DRAFT",
@@ -23,8 +23,8 @@ CREATE TABLE `articles` (
 
 CREATE TABLE `comments` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
-  `article_id` int UNIQUE NOT NULL,
-  `user_id` int UNIQUE NOT NULL,
+  `article_id` int NOT NULL,
+  `user_id` int NOT NULL,
   `body` varchar(1000) NOT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime ON UPDATE CURRENT_TIMESTAMP,
