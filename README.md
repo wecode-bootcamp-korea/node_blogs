@@ -1,17 +1,25 @@
 # Blogs API for Node.js Session
 
-## 기술스택
+## Technical Stack
 - Node.js
-- [Prisma](https://www.prisma.io/)
+- Express
+- [Prisma](https://www.prisma.io/): Modern Database Toolkit for TypeScript & Node.js
 - MySQL
 
-## API 
+## API
 - User API
-  - 로그인 
-  - 회원가입 
+  - signup
+  - login
 
-## 모듈화
-- controllers
+- Articles API
+  - Articles CRUD
+
+## Modularization
 - routes
+- controllers
 - services
+- prisma (= models)
+- middlewares
 - utils
+- app.js
+- server.js
