@@ -2,7 +2,7 @@ const { AUTH_TOKEN_SALT } = process.env
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { UserService } = require('../services')
-const errorGenerator = require('../utils/errorGenerator')
+const { errorGenerator } = require('../utils')
 
 const signUp = async (req, res, next) => {
   try {
