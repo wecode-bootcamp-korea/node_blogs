@@ -1,4 +1,3 @@
-const prisma = require('../prisma')
 const { ArticleService } = require('../services')
 const { errorGenerator, validateFields } = require('../utils')
 
