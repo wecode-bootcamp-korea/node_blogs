@@ -24,13 +24,12 @@ const findArticle = (field) => {
 }
 
 const createArticle = (fields) => {
-  const { userId, title, body } = fields
-  console.log(userId, title, body)
+  const { userId, ...dataFields } = fields
+  const data = makeDataForCreate(dataFields)
 
   return prisma.articles.create({
     data: {
-      body,
-      title,
+      ...data,
       users: {
         connect: {
           id: userId,

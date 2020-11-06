@@ -52,7 +52,7 @@ const updateOneArticle = async (req, res, next) => {
     const isValidFields = validateFields(requestedFields, allowedFields)
 
     if (!isValidFields)
-      errorGenerator({ statusCode: 404, message: 'invalid requested fields' })
+      errorGenerator({ statusCode: 400, message: 'invalid requested fields' })
 
     const foundArticle = await ArticleService.findArticle({ id: articleId })
     const { user_id: userIdFromArticle } = foundArticle
