@@ -1,0 +1,30 @@
+service: node-blogs-api
+plugins:
+  - serverless-dotenv-plugin
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-2
+  memorySize: 128
+  role: AWSLambdaVPCAccessExecutionRole
+  vpc:
+    securityGroupIds:
+      - DEFAULT_SECURITY_GROUP_ID
+    subnetIds:
+      - AP-NORTHEAST-2-REGION_SUBNET_ID
+   
+functions:
+  node-blogs-api:
+    handler: handler.lambda_handler
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: any
+          cors: true

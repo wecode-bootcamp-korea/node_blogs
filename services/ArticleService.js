@@ -1,12 +1,14 @@
 const prisma = require('../prisma')
 const { makeDataForCreate } = require('../utils')
 
-const findArticles = (fields = {}) => {
-  return prisma.articles.findMany({
+const findArticles = async (fields = {}) => {
+  const articles = await prisma.articles.findMany({
     where: {
       deleted_at: null,
     },
   })
+
+  return articles
 }
 
 const findArticle = (field) => {

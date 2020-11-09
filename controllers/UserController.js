@@ -1,5 +1,5 @@
 const { AUTH_TOKEN_SALT } = process.env
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { UserService } = require('../services')
 const { errorGenerator } = require('../utils')
