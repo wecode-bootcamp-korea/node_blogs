@@ -1,4 +1,4 @@
-service: node-blogs-api
+service: 서비스 이름
 plugins:
   - serverless-dotenv-plugin
 
@@ -9,12 +9,12 @@ provider:
   runtime: nodejs12.x
   region: ap-northeast-2
   memorySize: 128
-  role: AWSLambdaVPCAccessExecutionRole
+  role: IAM Role 에서 생성한 lambda-vpc-role ARN(리소스 이름)
   vpc:
     securityGroupIds:
-      - DEFAULT_SECURITY_GROUP_ID
+      - 기본으로 제공되는 VPC의 Security Group ID
     subnetIds:
-      - AP-NORTHEAST-2-REGION_SUBNET_ID
+      - 서울지역(northeast-2) Subnet ID
    
 functions:
   node-blogs-api:
