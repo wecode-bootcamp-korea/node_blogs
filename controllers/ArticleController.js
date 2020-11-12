@@ -16,6 +16,8 @@ const getOneArticle = async (req, res, next) => {
     const { articleId } = req.params
     const article = await ArticleService.findArticle({ id: articleId })
 
+    if (article.deleted_at) return res.status(200).json({ message: 'deleted ' })
+
     res.status(200).json({ article })
   } catch (err) {
     next(err)

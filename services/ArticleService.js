@@ -18,7 +18,17 @@ const findArticle = (field) => {
   return prisma.articles.findOne({
     where: { [uniqueKey]: value },
     include: {
-      users: true,
+      users: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
+      comments: {
+        where: {
+          deleted_at: null,
+        },
+      },
     },
   })
 }
@@ -47,7 +57,10 @@ const updateArticle = (fields) => {
     where: {
       id: Number(articleId),
     },
-    data,
+    data: {
+      ...data,
+      updated_at: new Date(),
+    },
   })
 }
 
@@ -58,6 +71,7 @@ const publishArticle = (articleId) => {
     },
     data: {
       status: 'PUBLISHED',
+      updated_at: new Date(),
     },
   })
 }
