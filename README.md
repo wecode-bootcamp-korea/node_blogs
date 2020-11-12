@@ -14,6 +14,9 @@
 - Articles API
   - Articles CRUD
 
+- Comments API
+  - Comments CRUD
+
 ## Modularization
 - routes
 - controllers
