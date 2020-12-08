@@ -21,7 +21,7 @@ const signUp = async (req, res, next) => {
 
     res.status(201).json({
       message: 'user created',
-      user_id: createdUser.id,
+      email: createdUser.email,
     })
   } catch (err) {
     next(err)
