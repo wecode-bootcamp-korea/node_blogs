@@ -1,12 +1,13 @@
 const prisma = require('../prisma')
-const { makeDataForCreate } = require('../utils')
+const { makeDataForCreate, makeQueryOption } = require('../utils')
 
-const findArticles = (fields = {}) => {
+const findArticles = (query) => {
+  const { offset, limit, where } = makeQueryOption(query)
+
   return prisma.articles.findMany({
-    where: {
-      deleted_at: null,
-      status: 'PUBLISHED',
-    },
+    skip: offset,
+    take: limit,
+    where,
   })
 }
 

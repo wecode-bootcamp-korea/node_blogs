@@ -3,7 +3,7 @@ const { errorGenerator, validateFields } = require('../utils')
 
 const getArticles = async (req, res, next) => {
   try {
-    const articles = await ArticleService.findArticles()
+    const articles = await ArticleService.findArticles(req.query)
 
     res.status(200).json({ articles })
   } catch (err) {
