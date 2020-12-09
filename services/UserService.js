@@ -12,7 +12,7 @@ const findUser = (field) => {
   const isKeyId = uniqueKey === 'id'
   const value = isKeyId ? Number(field[uniqueKey]) : field[uniqueKey]
 
-  return prisma.users.findOne({ where: { [uniqueKey]: value } })
+  return prisma.users.findUnique({ where: { [uniqueKey]: value } })
 }
 
 module.exports = {

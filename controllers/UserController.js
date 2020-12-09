@@ -34,16 +34,14 @@ const logIn = async (req, res, next) => {
 
     const foundUser = await UserService.findUser({ email })
 
-    if (!foundUser)
-      errorGenerator({ statusCode: 400, message: 'client input invalid' })
+    if (!foundUser) errorGenerator({ statusCode: 400, message: 'client input invalid' })
 
     const { id, password: hashedPassword } = foundUser
     const isValidPassword = await bcrypt.compare(inputPassword, hashedPassword)
 
-    if (!isValidPassword)
-      errorGenerator({ statusCode: 400, message: 'client input invalid' })
+    if (!isValidPassword) errorGenerator({ statusCode: 400, message: 'client input invalid' })
 
-    const token = jwt.sign({ id }, AUTH_TOKEN_SALT, { expiresIn: '1h' })
+    const token = jwt.sign({ id }, AUTH_TOKEN_SALT)
     res.status(200).json({ message: 'login success!', token })
   } catch (err) {
     next(err)

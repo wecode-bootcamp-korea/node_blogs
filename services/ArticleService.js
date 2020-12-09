@@ -5,6 +5,7 @@ const findArticles = (fields = {}) => {
   return prisma.articles.findMany({
     where: {
       deleted_at: null,
+      status: 'PUBLISHED',
     },
   })
 }
@@ -15,7 +16,7 @@ const findArticle = (field) => {
   const isKeyId = uniqueKey === 'id'
   const value = isKeyId ? Number(field[uniqueKey]) : field[uniqueKey]
 
-  return prisma.articles.findOne({
+  return prisma.articles.findUnique({
     where: { [uniqueKey]: value },
     include: {
       users: {
@@ -34,17 +35,13 @@ const findArticle = (field) => {
 }
 
 const createArticle = (fields) => {
-  const { userId, ...dataFields } = fields
+  const { userId: user_id, ...dataFields } = fields
   const data = makeDataForCreate(dataFields)
 
   return prisma.articles.create({
     data: {
       ...data,
-      users: {
-        connect: {
-          id: userId,
-        },
-      },
+      user_id,
     },
   })
 }

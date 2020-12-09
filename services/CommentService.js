@@ -13,16 +13,8 @@ const createCommentOfArticle = ({ articleId, userId, body }) => {
   return prisma.comments.create({
     data: {
       body,
-      articles: {
-        connect: {
-          id: Number(articleId),
-        },
-      },
-      users: {
-        connect: {
-          id: userId,
-        },
-      },
+      article_id: Number(articleId),
+      user_id: userId,
     },
   })
 }
