@@ -25,11 +25,6 @@ const findArticle = (field) => {
           email: true,
         },
       },
-      comments: {
-        where: {
-          deleted_at: null,
-        },
-      },
     },
   })
 }

@@ -29,8 +29,7 @@ const postOneArticle = async (req, res, next) => {
     const { id: userId } = req.foundUser
     const { title, body } = req.body
 
-    if (!title || !body)
-      errorGenerator({ statusCode: 400, message: 'invalid key error' })
+    if (!title || !body) errorGenerator({ statusCode: 400, message: 'invalid key error' })
 
     const createdArticle = await ArticleService.createArticle({
       userId,
@@ -53,8 +52,7 @@ const updateOneArticle = async (req, res, next) => {
 
     const isValidFields = validateFields(requestedFields, allowedFields)
 
-    if (!isValidFields)
-      errorGenerator({ statusCode: 400, message: 'invalid requested fields' })
+    if (!isValidFields) errorGenerator({ statusCode: 400, message: 'invalid requested fields' })
 
     const foundArticle = await ArticleService.findArticle({ id: articleId })
     const { user_id: userIdFromArticle } = foundArticle
@@ -79,8 +77,7 @@ const publishOneArticle = async (req, res, next) => {
     const { articleId } = req.params
 
     const foundArticle = await ArticleService.findArticle({ id: articleId })
-    if (!foundArticle)
-      errorGenerator({ statusCode: 404, message: 'article not found' })
+    if (!foundArticle) errorGenerator({ statusCode: 404, message: 'article not found' })
     const { user_id: userIdFromArticle } = foundArticle
 
     if (userIdFromToken !== userIdFromArticle)
@@ -101,8 +98,7 @@ const deleteOneArticle = async (req, res, next) => {
 
     const foundArticle = await ArticleService.findArticle({ id: articleId })
 
-    if (!foundArticle)
-      errorGenerator({ statusCode: 404, message: 'article not found' })
+    if (!foundArticle) errorGenerator({ statusCode: 404, message: 'article not found' })
     const { user_id: userIdFromArticle } = foundArticle
 
     if (userIdFromToken !== userIdFromArticle)

@@ -1,9 +1,6 @@
-const makeQueryOption = (fields) => {
-  const queryOptions = Object.keys(fields).map((field) => {
-    return { [field]: { contains: fields[field] } }
+const makeQueryOption = (fields) =>
+  Object.entries(fields).map(([key, value]) => {
+    return { [key]: { contains: value } }
   })
-
-  return queryOptions
-}
 
 module.exports = makeQueryOption
