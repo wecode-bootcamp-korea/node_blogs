@@ -1,11 +1,7 @@
-const makeDataForCreate = (fields) => {
-  const data = Object.keys(fields).reduce((data, field) => {
-    data[field] = fields[field]
-
+const makeDataForCreate = (fields) =>
+  Object.entries(fields).reduce((data, [key, value]) => {
+    data[key] = value
     return data
   }, {})
-
-  return data
-}
 
 module.exports = makeDataForCreate

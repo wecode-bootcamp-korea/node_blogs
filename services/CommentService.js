@@ -1,28 +1,28 @@
 const prisma = require('../prisma')
 
-const findCommentsOfArticle = ({ articleId }) => {
+const findComments = ({ article_id }) => {
   return prisma.comments.findMany({
     where: {
-      article_id: Number(articleId),
+      article_id,
       deleted_at: null,
     },
   })
 }
 
-const createCommentOfArticle = ({ articleId, userId, body }) => {
+const createComment = ({ article_id, user_id, body }) => {
   return prisma.comments.create({
     data: {
       body,
-      article_id: Number(articleId),
-      user_id: userId,
+      article_id,
+      user_id,
     },
   })
 }
 
-const updateCommentOfArticle = ({ commentId, body }) => {
+const updateComment = ({ comment_id, body }) => {
   return prisma.comments.update({
     where: {
-      id: Number(commentId),
+      id: comment_id,
     },
     data: {
       body,
@@ -31,10 +31,10 @@ const updateCommentOfArticle = ({ commentId, body }) => {
   })
 }
 
-const deleteCommentOfArticle = ({ commentId }) => {
+const deleteComment = ({ comment_id }) => {
   return prisma.comments.update({
     where: {
-      id: Number(commentId),
+      id: comment_id,
     },
     data: {
       deleted_at: new Date(),
@@ -43,8 +43,8 @@ const deleteCommentOfArticle = ({ commentId }) => {
 }
 
 module.exports = {
-  findCommentsOfArticle,
-  createCommentOfArticle,
-  updateCommentOfArticle,
-  deleteCommentOfArticle,
+  findComments,
+  createComment,
+  updateComment,
+  deleteComment,
 }

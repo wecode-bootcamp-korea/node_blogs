@@ -1,11 +1,11 @@
-const { CommentService, ArticleService } = require('../services')
+const { CommentService } = require('../services')
 const { errorGenerator } = require('../utils')
 
 const getComments = async (req, res, next) => {
   try {
     const { articleId } = req.params
 
-    const comments = await CommentService.findCommentsOfArticle({ articleId })
+    const comments = await CommentService.findComments({ article_id: Number(articleId) })
 
     res.status(200).json({ comments })
   } catch (err) {
@@ -13,17 +13,17 @@ const getComments = async (req, res, next) => {
   }
 }
 
-const postOneComment = async (req, res, next) => {
+const postComment = async (req, res, next) => {
   try {
     const { articleId } = req.params
     const { body } = req.body
-    const { id: userId } = req.foundUser
+    const { id: userIdFromToken } = req.foundUser
 
-    if (!body) errorGenerator({ message: 'invalud input', statusCode: 400 })
+    if (!body) errorGenerator({ message: 'invalid input', statusCode: 400 })
 
-    const createdComment = await CommentService.createCommentOfArticle({
-      articleId,
-      userId,
+    const createdComment = await CommentService.createComment({
+      article_id: Number(articleId),
+      user_id: userIdFromToken,
       body,
     })
 
@@ -33,57 +33,52 @@ const postOneComment = async (req, res, next) => {
   }
 }
 
-const updateOneComment = async (req, res, next) => {
+const updateComment = async (req, res, next) => {
   try {
-    const { commentId, articleId } = req.params
-    const { id: userIdFromToken } = req.foundUser
+    const { articleId, commentId } = req.params
     const { body } = req.body
+    const { id: userIdFromToken } = req.foundUser
 
-    const foundArticle = await ArticleService.findArticle({ id: articleId })
+    if (!body) errorGenerator({ message: 'invalid input', statusCode: 400 })
 
-    if (userIdFromToken !== foundArticle.user_id)
-      errorGenerator({ message: 'unauthorized', statusCode: 403 })
+    const comments = await CommentService.findComments({ article_id: Number(articleId) })
+    const foundComment = comments.find((comment) => comment.id === Number(commentId))
+    if (!foundComment) errorGenerator({ message: 'not found', statusCode: 404 })
 
-    const isCommentIncluded = foundArticle.comments.some(
-      ({ id }) => id === Number(commentId)
-    )
+    const isValidUser = foundComment.user_id === userIdFromToken
+    if (!isValidUser) errorGenerator({ message: 'unauthorized', statusCode: 403 })
 
-    if (!isCommentIncluded)
-      errorGenerator({ message: 'comment not in the article', statusCode: 400 })
-
-    const updatedComment = await CommentService.updateCommentOfArticle({
-      commentId,
+    const updatedComment = await CommentService.updateComment({
+      comment_id: foundComment.id,
       body,
     })
 
-    res.status(201).json({ updatedComment })
+    res.status(200).json({ updatedComment })
   } catch (err) {
     next(err)
   }
 }
 
-const deleteOneComment = async (req, res, next) => {
+const deleteComment = async (req, res, next) => {
   try {
-    const { commentId, articleId: id } = req.params
+    const { articleId, commentId } = req.params
+    const { body } = req.body
     const { id: userIdFromToken } = req.foundUser
 
-    const foundArticle = await ArticleService.findArticle({ id })
+    if (!body) errorGenerator({ message: 'invalid input', statusCode: 400 })
 
-    if (userIdFromToken !== foundArticle.user_id)
-      errorGenerator({ message: 'unauthorized', statusCode: 403 })
+    const comments = await CommentService.findComments({ article_id: Number(articleId) })
+    const foundComment = comments.find((comment) => comment.id === Number(commentId))
+    if (!foundComment) errorGenerator({ message: 'not found', statusCode: 404 })
 
-    const isCommentIncluded = foundArticle.comments.some(
-      ({ id }) => id === Number(commentId)
-    )
+    const isValidUser = foundComment.user_id === userIdFromToken
+    if (!isValidUser) errorGenerator({ message: 'unauthorized', statusCode: 403 })
 
-    if (!isCommentIncluded)
-      errorGenerator({ message: 'comment not in the article', statusCode: 400 })
-
-    const deletedComment = await CommentService.deleteCommentOfArticle({
-      commentId,
+    const deletedComment = await CommentService.deleteComment({
+      comment_id: foundComment.id,
     })
 
-    res.status(201).json({ deletedComment })
+    res.status(200).json({ deletedComment })
   } catch (err) {
     next(err)
   }
@@ -91,7 +86,7 @@ const deleteOneComment = async (req, res, next) => {
 
 module.exports = {
   getComments,
-  postOneComment,
-  updateOneComment,
-  deleteOneComment,
+  postComment,
+  updateComment,
+  deleteComment,
 }
