@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { ArticleController } = require('../controllers')
+const { ArticleController, CommentController } = require('../controllers')
 const { validateToken } = require('../middlewares')
 
 // articles router
@@ -10,5 +10,11 @@ router.post('/', validateToken, ArticleController.postOneArticle)
 router.put('/:articleId', validateToken, ArticleController.updateOneArticle)
 router.put('/publish/:articleId', validateToken, ArticleController.publishOneArticle)
 router.delete('/:articleId', validateToken, ArticleController.deleteOneArticle)
+
+// comments router
+router.get('/:articleId/comments', CommentController.getComments)
+router.post('/:articleId/comments', validateToken, CommentController.postComment)
+router.put('/:articleId/comments/:commentId', validateToken, CommentController.updateComment)
+router.delete('/:articleId/comments/:commentId', validateToken, CommentController.deleteComment)
 
 module.exports = router
