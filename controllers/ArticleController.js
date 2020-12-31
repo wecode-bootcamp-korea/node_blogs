@@ -1,116 +1,91 @@
 const { ArticleService } = require('../services')
-const { errorGenerator, validateFields } = require('../utils')
+const { errorWrapper, errorGenerator } = require('../errors')
+const { validateFields } = require('../utils')
 
-const getArticles = async (req, res, next) => {
-  try {
-    const articles = await ArticleService.findArticles(req.query)
+const getArticles = errorWrapper(async (req, res, next) => {
+  const articles = await ArticleService.findArticles(req.query)
+  res.status(200).json({ articles })
+})
 
-    res.status(200).json({ articles })
-  } catch (err) {
-    next(err)
-  }
-}
+const getOneArticle = errorWrapper(async (req, res, next) => {
+  const { articleId } = req.params
+  const article = await ArticleService.findArticle({ id: articleId })
 
-const getOneArticle = async (req, res, next) => {
-  try {
-    const { articleId } = req.params
-    const article = await ArticleService.findArticle({ id: articleId })
+  if (article.deleted_at) return res.status(200).json({ message: 'deleted ' })
 
-    if (article.deleted_at) return res.status(200).json({ message: 'deleted ' })
+  res.status(200).json({ article })
+})
 
-    res.status(200).json({ article })
-  } catch (err) {
-    next(err)
-  }
-}
+const postOneArticle = errorWrapper(async (req, res, next) => {
+  const { id: userId } = req.foundUser
+  const { title, body } = req.body
 
-const postOneArticle = async (req, res, next) => {
-  try {
-    const { id: userId } = req.foundUser
-    const { title, body } = req.body
+  if (!title || !body) errorGenerator({ statusCode: 400, message: 'invalid key error' })
 
-    if (!title || !body) errorGenerator({ statusCode: 400, message: 'invalid key error' })
+  const createdArticle = await ArticleService.createArticle({
+    userId,
+    title,
+    body,
+  })
 
-    const createdArticle = await ArticleService.createArticle({
-      userId,
-      title,
-      body,
-    })
+  res.status(201).json({ createdArticle })
+})
 
-    res.status(201).json({ createdArticle })
-  } catch (err) {
-    next(err)
-  }
-}
+const updateOneArticle = errorWrapper(async (req, res, next) => {
+  const { id: userIdFromToken } = req.foundUser
+  const { articleId } = req.params
+  const requestedFields = req.body
+  const allowedFields = ['title', 'body']
 
-const updateOneArticle = async (req, res, next) => {
-  try {
-    const { id: userIdFromToken } = req.foundUser
-    const { articleId } = req.params
-    const requestedFields = req.body
-    const allowedFields = ['title', 'body']
+  const isValidFields = validateFields(requestedFields, allowedFields)
 
-    const isValidFields = validateFields(requestedFields, allowedFields)
+  if (!isValidFields) errorGenerator({ statusCode: 400, message: 'invalid requested fields' })
 
-    if (!isValidFields) errorGenerator({ statusCode: 400, message: 'invalid requested fields' })
+  const foundArticle = await ArticleService.findArticle({ id: articleId })
+  const { user_id: userIdFromArticle } = foundArticle
 
-    const foundArticle = await ArticleService.findArticle({ id: articleId })
-    const { user_id: userIdFromArticle } = foundArticle
+  if (userIdFromToken !== userIdFromArticle)
+    errorGenerator({ statusCode: 403, message: 'unauthorized' })
 
-    if (userIdFromToken !== userIdFromArticle)
-      errorGenerator({ statusCode: 403, message: 'unauthorized' })
+  const updatedArticle = await ArticleService.updateArticle({
+    articleId,
+    requestedFields,
+  })
 
-    const updatedArticle = await ArticleService.updateArticle({
-      articleId,
-      requestedFields,
-    })
+  res.status(201).json({ updatedArticle })
+})
 
-    res.status(201).json({ updatedArticle })
-  } catch (err) {
-    next(err)
-  }
-}
+const publishOneArticle = errorWrapper(async (req, res, next) => {
+  const { id: userIdFromToken } = req.foundUser
+  const { articleId } = req.params
 
-const publishOneArticle = async (req, res, next) => {
-  try {
-    const { id: userIdFromToken } = req.foundUser
-    const { articleId } = req.params
+  const foundArticle = await ArticleService.findArticle({ id: articleId })
+  if (!foundArticle) errorGenerator({ statusCode: 404, message: 'article not found' })
+  const { user_id: userIdFromArticle } = foundArticle
 
-    const foundArticle = await ArticleService.findArticle({ id: articleId })
-    if (!foundArticle) errorGenerator({ statusCode: 404, message: 'article not found' })
-    const { user_id: userIdFromArticle } = foundArticle
+  if (userIdFromToken !== userIdFromArticle)
+    errorGenerator({ statusCode: 403, message: 'unauthorized' })
 
-    if (userIdFromToken !== userIdFromArticle)
-      errorGenerator({ statusCode: 403, message: 'unauthorized' })
+  const publishedArticle = await ArticleService.publishArticle(articleId)
 
-    const publishedArticle = await ArticleService.publishArticle(articleId)
+  res.status(201).json({ publishedArticle })
+})
 
-    res.status(201).json({ publishedArticle })
-  } catch (err) {
-    next(err)
-  }
-}
+const deleteOneArticle = errorWrapper(async (req, res, next) => {
+  const { id: userIdFromToken } = req.foundUser
+  const { articleId } = req.params
 
-const deleteOneArticle = async (req, res, next) => {
-  try {
-    const { id: userIdFromToken } = req.foundUser
-    const { articleId } = req.params
+  const foundArticle = await ArticleService.findArticle({ id: articleId })
+  if (!foundArticle) errorGenerator({ statusCode: 404, message: 'article not found' })
+  const { user_id: userIdFromArticle } = foundArticle
 
-    const foundArticle = await ArticleService.findArticle({ id: articleId })
+  if (userIdFromToken !== userIdFromArticle)
+    errorGenerator({ statusCode: 403, message: 'unauthorized' })
 
-    if (!foundArticle) errorGenerator({ statusCode: 404, message: 'article not found' })
-    const { user_id: userIdFromArticle } = foundArticle
+  const deletedArticle = await ArticleService.deleteArticle(articleId)
 
-    if (userIdFromToken !== userIdFromArticle)
-      errorGenerator({ statusCode: 403, message: 'unauthorized' })
-
-    const deletedArticle = await ArticleService.deleteArticle(articleId)
-
-    res.status(201).json({ deletedArticle })
-  } catch (err) {
-    next(err)
-  }
-}
+  res.status(201).json({ deletedArticle })
+})
 
 module.exports = {
   getArticles,

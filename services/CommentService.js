@@ -1,6 +1,6 @@
 const prisma = require('../prisma')
 
-const findComments = ({ article_id }) => {
+const fetchComments = ({ article_id }) => {
   return prisma.comments.findMany({
     where: {
       article_id,
@@ -12,9 +12,9 @@ const findComments = ({ article_id }) => {
 const createComment = ({ article_id, user_id, body }) => {
   return prisma.comments.create({
     data: {
-      body,
       article_id,
       user_id,
+      body,
     },
   })
 }
@@ -26,7 +26,6 @@ const updateComment = ({ comment_id, body }) => {
     },
     data: {
       body,
-      updated_at: new Date(),
     },
   })
 }
@@ -43,7 +42,7 @@ const deleteComment = ({ comment_id }) => {
 }
 
 module.exports = {
-  findComments,
+  fetchComments,
   createComment,
   updateComment,
   deleteComment,

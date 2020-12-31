@@ -1,9 +1,7 @@
 const prisma = require('../prisma')
-const { makeDataForCreate } = require('../utils')
 
 const createUser = (fields) => {
-  const data = makeDataForCreate(fields)
-  return prisma.users.create({ data })
+  return prisma.users.create({ data: fields })
 }
 
 const findUser = (field) => {
