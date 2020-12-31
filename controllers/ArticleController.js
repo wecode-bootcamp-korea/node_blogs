@@ -2,12 +2,12 @@ const { ArticleService } = require('../services')
 const { errorWrapper, errorGenerator } = require('../errors')
 const { validateFields } = require('../utils')
 
-const getArticles = errorWrapper(async (req, res, next) => {
+const getArticles = errorWrapper(async (req, res) => {
   const articles = await ArticleService.findArticles(req.query)
   res.status(200).json({ articles })
 })
 
-const getOneArticle = errorWrapper(async (req, res, next) => {
+const getOneArticle = errorWrapper(async (req, res) => {
   const { articleId } = req.params
   const article = await ArticleService.findArticle({ id: articleId })
 
@@ -16,7 +16,7 @@ const getOneArticle = errorWrapper(async (req, res, next) => {
   res.status(200).json({ article })
 })
 
-const postOneArticle = errorWrapper(async (req, res, next) => {
+const postOneArticle = errorWrapper(async (req, res) => {
   const { id: userId } = req.foundUser
   const { title, body } = req.body
 
@@ -31,7 +31,7 @@ const postOneArticle = errorWrapper(async (req, res, next) => {
   res.status(201).json({ createdArticle })
 })
 
-const updateOneArticle = errorWrapper(async (req, res, next) => {
+const updateOneArticle = errorWrapper(async (req, res) => {
   const { id: userIdFromToken } = req.foundUser
   const { articleId } = req.params
   const requestedFields = req.body
@@ -55,7 +55,7 @@ const updateOneArticle = errorWrapper(async (req, res, next) => {
   res.status(201).json({ updatedArticle })
 })
 
-const publishOneArticle = errorWrapper(async (req, res, next) => {
+const publishOneArticle = errorWrapper(async (req, res) => {
   const { id: userIdFromToken } = req.foundUser
   const { articleId } = req.params
 
@@ -71,7 +71,7 @@ const publishOneArticle = errorWrapper(async (req, res, next) => {
   res.status(201).json({ publishedArticle })
 })
 
-const deleteOneArticle = errorWrapper(async (req, res, next) => {
+const deleteOneArticle = errorWrapper(async (req, res) => {
   const { id: userIdFromToken } = req.foundUser
   const { articleId } = req.params
 

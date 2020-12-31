@@ -1,14 +1,14 @@
 const { CommentService } = require('../services')
 const { errorWrapper, errorGenerator } = require('../errors')
 
-const getComments = errorWrapper(async (req, res, next) => {
+const getComments = errorWrapper(async (req, res) => {
   const { articleId } = req.params
 
   const comments = await CommentService.fetchComments({ article_id: Number(articleId) })
   res.status(200).json({ comments })
 })
 
-const postComment = errorWrapper(async (req, res, next) => {
+const postComment = errorWrapper(async (req, res) => {
   const { articleId } = req.params
   const { id: userIdFromToken } = req.foundUser
   const { body } = req.body
@@ -22,7 +22,7 @@ const postComment = errorWrapper(async (req, res, next) => {
   res.status(201).json({ createdComment })
 })
 
-const updateComment = errorWrapper(async (req, res, next) => {
+const updateComment = errorWrapper(async (req, res) => {
   const { articleId, commentId } = req.params
   const { body } = req.body
   const { id: userIdFromToken } = req.foundUser
@@ -43,7 +43,7 @@ const updateComment = errorWrapper(async (req, res, next) => {
   res.status(200).json({ updatedComment })
 })
 
-const deleteComment = errorWrapper(async (req, res, next) => {
+const deleteComment = errorWrapper(async (req, res) => {
   const { articleId, commentId } = req.params
   const { id: userIdFromToken } = req.foundUser
 

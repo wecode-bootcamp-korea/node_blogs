@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { UserService } = require('../services')
 const { errorWrapper, errorGenerator } = require('../errors')
 
-const signUp = errorWrapper(async (req, res, next) => {
+const signUp = errorWrapper(async (req, res) => {
   const { email, password } = req.body
   if (!email || !password) errorGenerator({ statusCode: 400, message: 'invalid input' })
 
@@ -25,7 +25,7 @@ const signUp = errorWrapper(async (req, res, next) => {
   })
 })
 
-const logIn = errorWrapper(async (req, res, next) => {
+const logIn = errorWrapper(async (req, res) => {
   const { email, password: inputPassword } = req.body
 
   const foundUser = await UserService.findUser({ email })
