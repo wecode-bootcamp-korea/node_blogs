@@ -8,6 +8,7 @@ app.use(express.json())
 app.use(logger)
 app.use(routes)
 
+// general error handler
 app.use((err, req, res, next) => {
   const { status, message } = err
   console.error(err)

@@ -1,13 +1,17 @@
 const prisma = require('../prisma')
-const { makeDataForCreate, makeQueryOption } = require('../utils')
+const { makeQueryOption } = require('../utils')
+
+const ARTICLES_DEFAULT_OFFSET = 0
+const ARTICLES_DEFAULT_LIMIT = 5
 
 const findArticles = (query) => {
-  const { offset, limit, where } = makeQueryOption(query)
+  const { offset, limit, ...fields } = query
+  const where = makeQueryOption(fields)
 
   return prisma.articles.findMany({
-    skip: offset,
-    take: limit,
     where,
+    skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
+    take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
   })
 }
 
@@ -37,11 +41,10 @@ const findArticle = (field) => {
 
 const createArticle = (fields) => {
   const { userId: user_id, ...dataFields } = fields
-  const data = makeDataForCreate(dataFields)
 
   return prisma.articles.create({
     data: {
-      ...data,
+      ...dataFields,
       user_id,
     },
   })
@@ -49,14 +52,13 @@ const createArticle = (fields) => {
 
 const updateArticle = (fields) => {
   const { articleId, requestedFields } = fields
-  const data = makeDataForCreate(requestedFields)
 
   return prisma.articles.update({
     where: {
       id: Number(articleId),
     },
     data: {
-      ...data,
+      ...requestedFields,
       updated_at: new Date(),
     },
   })
