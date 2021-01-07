@@ -10,9 +10,9 @@ app.use(routes)
 
 // general error handler
 app.use((err, req, res, next) => {
-  const { status, message } = err
+  const { statusCode, message } = err
   console.error(err)
-  res.status(status || 500).json({ message })
+  res.status(statusCode).json({ message })
 })
 
 module.exports = app

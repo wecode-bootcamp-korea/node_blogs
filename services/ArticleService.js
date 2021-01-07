@@ -1,3 +1,4 @@
+const { body } = require('express-validator')
 const prisma = require('../prisma')
 const { makeQueryOption } = require('../utils')
 
@@ -12,6 +13,9 @@ const findArticles = (query) => {
     where,
     skip: Number(offset) || ARTICLES_DEFAULT_OFFSET,
     take: Number(limit) || ARTICLES_DEFAULT_LIMIT,
+    orderBy: {
+      created_at: 'desc',
+    },
   })
 }
 

@@ -8,7 +8,6 @@ const validateToken = errorWrapper(async (req, res, next) => {
   const { id } = jwt.verify(token, AUTH_TOKEN_SALT)
 
   const foundUser = await UserService.findUser({ id })
-
   if (!foundUser) errorGenerator({ statusCode: 404, message: 'user not found' })
 
   req.foundUser = foundUser
