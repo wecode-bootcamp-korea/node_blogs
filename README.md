@@ -23,6 +23,7 @@
 - services
 - prisma (= models)
 - middlewares
+- errors
 - utils
 - app.js
 - server.js
