@@ -12,7 +12,7 @@ app.use(routes)
 app.use((err, req, res, next) => {
   const { statusCode, message } = err
   console.error(err)
-  res.status(statusCode).json({ message })
+  res.status(statusCode || 500).json({ message })
 })
 
 module.exports = app
